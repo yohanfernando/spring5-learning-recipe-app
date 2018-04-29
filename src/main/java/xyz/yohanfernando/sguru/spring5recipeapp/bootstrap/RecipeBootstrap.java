@@ -1,8 +1,10 @@
 package xyz.yohanfernando.sguru.spring5recipeapp.bootstrap;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import xyz.yohanfernando.sguru.spring5recipeapp.domain.*;
 import xyz.yohanfernando.sguru.spring5recipeapp.repository.CategoryRepository;
 import xyz.yohanfernando.sguru.spring5recipeapp.repository.RecipeRepository;
@@ -10,9 +12,11 @@ import xyz.yohanfernando.sguru.spring5recipeapp.repository.UnitOfMeasureReposito
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Component
 public class RecipeBootstrap implements ApplicationListener<ContextRefreshedEvent> {
 
@@ -28,7 +32,10 @@ public class RecipeBootstrap implements ApplicationListener<ContextRefreshedEven
     }
 
     @Override
+    @Transactional
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
+        log.debug("Bootstrapping teh application with default data @ " + new Date());
+
         recipeRepository.saveAll(getRecipes());
     }
 
@@ -74,7 +81,7 @@ public class RecipeBootstrap implements ApplicationListener<ContextRefreshedEven
         UnitOfMeasure uomPint = uomPintOptional.get();
         UnitOfMeasure uomCup = uomCupOptional.get();
 
-        
+
         Optional<Category> americanOptionalCategory = categoryRepository.findByDescription("American");
         if (!americanOptionalCategory.isPresent()) {
             throw new RuntimeException("Expected Category Not found");
