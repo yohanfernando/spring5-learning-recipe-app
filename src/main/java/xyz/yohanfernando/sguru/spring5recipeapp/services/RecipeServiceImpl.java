@@ -7,6 +7,7 @@ import xyz.yohanfernando.sguru.spring5recipeapp.repository.RecipeRepository;
 
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 @Slf4j
@@ -26,5 +27,17 @@ public class RecipeServiceImpl implements RecipeService {
         Set<Recipe> recipeSet = new HashSet<>();
         recipeRepository.findAll().iterator().forEachRemaining(recipeSet::add);
         return recipeSet;
+    }
+
+    @Override
+    public Recipe findById(Long id) {
+
+        Optional<Recipe> byId = recipeRepository.findById(id);
+
+        if (!byId.isPresent()) {
+            throw new RuntimeException("Recipe not found!");
+        }
+
+        return byId.get();
     }
 }
